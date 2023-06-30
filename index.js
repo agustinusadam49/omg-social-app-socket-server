@@ -14,6 +14,7 @@ const io = require("socket.io")(PORT, {
 });
 
 let users = [];
+console.log("Online Users:", users)
 
 function addOnlineUsers(userOnline, socketId) {
   const isHasUserId = users.filter(
