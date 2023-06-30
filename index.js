@@ -3,9 +3,13 @@ require("dotenv").config();
 const PORT = process.env.SOCKET_PORT
 const CLIENT_URL = process.env.ORIGIN_CLIENT_URL
 
+console.log("PORT:", PORT)
+console.log("CLIENT_URL:", CLIENT_URL)
+
 const io = require("socket.io")(PORT, {
   cors: {
     origin: CLIENT_URL,
+    credentials: true,
   },
 });
 
