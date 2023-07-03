@@ -1,20 +1,34 @@
 require("dotenv").config();
 
-const PORT = process.env.SOCKET_PORT
-const CLIENT_URL = process.env.ORIGIN_CLIENT_URL
+const PORT = process.env.SOCKET_PORT;
+const CLIENT_URL = process.env.ORIGIN_CLIENT_URL;
+console.log("PORT:", PORT);
+console.log("CLIENT_URL:", CLIENT_URL);
 
-console.log("PORT:", PORT)
-console.log("CLIENT_URL:", CLIENT_URL)
+const express = require("express");
+const app = express();
+const http = require("http");
+const cors = require("cors");
+const { Server } = require("socket.io");
+app.use(cors());
 
-const io = require("socket.io")(PORT, {
+const server = http.createServer(app);
+
+const io = new Server(server, {
   cors: {
     origin: CLIENT_URL,
-    credentials: true,
+    methods: ["GET", "POST"],
   },
 });
 
+// const io = require("socket.io")(server, {
+//   cors: {
+//     origin: CLIENT_URL,
+//     credentials: true,
+//   },
+// });
+
 let users = [];
-console.log("Online Users:", users)
 
 function addOnlineUsers(userOnline, socketId) {
   const isHasUserId = users.filter(
@@ -63,6 +77,7 @@ io.on("connection", (socket) => {
   socket.on("addOnlineUsers", (usersOnline) => {
     addOnlineUsers(usersOnline, socket.id);
     updateUsers(usersOnline, socket.id);
+    console.log("Online Users:", users);
     io.emit("usersOnline", users);
   });
 
@@ -79,10 +94,14 @@ io.on("connection", (socket) => {
   socket.on("sendNotif", (messageObj) => {
     const receiverSocketId = getReceiverSocketId(messageObj);
     io.to(receiverSocketId).emit("getNotifStatus", true);
-  })
+  });
 
   socket.on("disconnect", () => {
     removeUser(socket.id);
     io.emit("usersOnline", users);
   });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server socket berjalan pada port: ${PORT}`);
 });
