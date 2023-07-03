@@ -18,6 +18,7 @@ const io = new Server(server, {
   cors: {
     origin: CLIENT_URL,
     methods: ["GET", "PUT", "POST", "DELETE"],
+    allowedHeaders: ["my-custom-header"],
     credentials: true,
   },
 });
