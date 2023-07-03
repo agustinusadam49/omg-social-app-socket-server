@@ -1,9 +1,9 @@
 require("dotenv").config();
 
 const PORT = process.env.SOCKET_PORT;
-// const CLIENT_URL = process.env.ORIGIN_CLIENT_URL;
+const CLIENT_URL = process.env.ORIGIN_CLIENT_URL;
 console.log("PORT:", PORT);
-// console.log("CLIENT_URL:", CLIENT_URL);
+console.log("CLIENT_URL:", CLIENT_URL);
 
 const express = require("express");
 const app = express();
@@ -15,14 +15,11 @@ app.use(cors());
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  // cors: {
-  //   origin: CLIENT_URL,
-  //   methods: ["GET", "PUT", "POST", "DELETE"],
-  // },
-  allowRequest: (req, callback) => {
-    const noOriginHeader = req.headers.origin === undefined;
-    callback(null, noOriginHeader);
-  }
+  cors: {
+    origin: CLIENT_URL,
+    methods: ["GET", "PUT", "POST", "DELETE"],
+    credentials: true,
+  },
 });
 
 // const io = require("socket.io")(server, {
