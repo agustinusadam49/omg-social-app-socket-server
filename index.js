@@ -17,8 +17,12 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: CLIENT_URL,
-    methods: ["GET", "POST"],
+    methods: ["GET", "PUT", "POST", "DELETE"],
   },
+  allowRequest: (req, callback) => {
+    const noOriginHeader = req.headers.origin === undefined;
+    callback(null, noOriginHeader);
+  }
 });
 
 // const io = require("socket.io")(server, {
