@@ -7,28 +7,31 @@ console.log("CLIENT_URL:", CLIENT_URL);
 
 const express = require("express");
 const app = express();
-const http = require("http");
 const cors = require("cors");
-const { Server } = require("socket.io");
-app.use(cors());
-
+const http = require("http");
 const server = http.createServer(app);
+// const io = require("socket.io")(server);
+// const { Server } = require("socket.io");
+// app.use(cors());
 
-const io = new Server(server, {
-  cors: {
-    origin: CLIENT_URL,
-    methods: ["GET", "PUT", "POST", "DELETE"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true,
-  },
-});
+// const server = http.createServer(app);
 
-// const io = require("socket.io")(server, {
+// const io = new Server(server, {
 //   cors: {
 //     origin: CLIENT_URL,
+//     methods: ["GET", "PUT", "POST", "DELETE"],
+//     allowedHeaders: ["my-custom-header"],
 //     credentials: true,
 //   },
 // });
+
+const io = require("socket.io")(server, {
+  cors: {
+    origin: CLIENT_URL,
+  },
+});
+
+app.use(cors());
 
 let users = [];
 
